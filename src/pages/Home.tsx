@@ -52,78 +52,39 @@ const SkeletonCard = () => (
 )
 
 const FALLBACK_CENTERS: Center[] = [
-  {
-    id: '1', name: 'Equinox Fitness', type: 'gym', specialization: 'Body transformation, Personal training, Weight loss',
-    area: 'Ratanada', rating: 4.8, total_reviews: 450, amenities: ["AC","Parking","Locker","Shower","Diet Counseling","WiFi"],
-    image_url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800',
-    opening_time: '05:30 AM', closing_time: '10:00 PM'
-  },
-  {
-    id: '2', name: 'Fitbox Fitness Studio', type: 'gym', specialization: 'Group classes, Strength training, Functional fitness',
-    area: 'Paota', rating: 4.5, total_reviews: 320, amenities: ["AC","Locker","Steam Bath","Personal Training"],
-    image_url: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&q=80&w=800',
-    opening_time: '06:00 AM', closing_time: '09:00 PM'
-  },
-  {
-    id: '3', name: 'Metalix Gym', type: 'gym', specialization: 'Bodybuilding, Powerlifting, Calisthenics',
-    area: 'Sardarpura', rating: 4.7, total_reviews: 510, amenities: ["AC","Parking","Supplement Store","Locker"],
-    image_url: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=800',
-    opening_time: '05:00 AM', closing_time: '10:00 PM'
-  },
-  {
-    id: '4', name: 'CrossFit Fitness Center', type: 'crossfit', specialization: 'High-intensity functional training, Olympic lifting',
-    area: 'Pal', rating: 4.9, total_reviews: 150, amenities: ["Parking","Outdoor Area","Juice Bar","Pull-up Rigs"],
-    image_url: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800',
-    opening_time: '05:30 AM', closing_time: '08:00 PM'
-  },
-  {
-    id: '5', name: 'Sky Fit Gym', type: 'zumba', specialization: 'Zumba, Yoga, Dance fitness, Aerobics',
-    area: 'Mandore', rating: 4.2, total_reviews: 190, amenities: ["AC","Changing Room","Sound System","Dance Floor"],
-    image_url: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?auto=format&fit=crop&q=80&w=800',
-    opening_time: '06:30 AM', closing_time: '08:30 PM'
-  },
-  {
-    id: '6', name: 'Rishi Fitness Centre', type: 'yoga', specialization: 'Classical Yoga, Meditation, Pranayama',
-    area: 'City', rating: 4.6, total_reviews: 210, amenities: ["Meditation Hall","Parking","Yoga Props"],
-    image_url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800',
-    opening_time: '06:00 AM', closing_time: '08:00 PM'
-  },
-  {
-    id: '7', name: 'Trident Fitness', type: 'mma', specialization: 'Mixed Martial Arts, Kickboxing, Boxing',
-    area: 'Rai Ka Bagh', rating: 4.8, total_reviews: 120, amenities: ["MMA Ring","Punching Bags","Shower","Lockers"],
-    image_url: 'https://images.unsplash.com/photo-1552072092-7f9b8d63efcb?auto=format&fit=crop&q=80&w=800',
-    opening_time: '06:00 AM', closing_time: '09:00 PM'
-  },
-  {
-    id: '8', name: 'Core Pilates Studio', type: 'pilates', specialization: 'Reformer Pilates, Mat Pilates, Flexibility',
-    area: 'Ratanada', rating: 4.9, total_reviews: 180, amenities: ["AC","Pilates Reformers","Locker","Mats provided"],
-    image_url: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=800',
-    opening_time: '07:00 AM', closing_time: '08:00 PM'
-  },
-  {
-    id: '9', name: 'Blue City Aquatics', type: 'swimming', specialization: 'Indoor Swimming, Aqua Aerobics, Coaching',
-    area: 'Pal', rating: 4.6, total_reviews: 245, amenities: ["Olympic Pool","Shower","Lockers","Lifeguard"],
-    image_url: 'https://images.unsplash.com/photo-1576013462273-d130a112245b?auto=format&fit=crop&q=80&w=800',
-    opening_time: '05:30 AM', closing_time: '09:00 PM'
-  },
-  {
-    id: '10', name: 'Rhythm Dance Academy', type: 'dance', specialization: 'Hip-Hop, Bollywood, Contemporary Dance',
-    area: 'Sardarpura', rating: 4.7, total_reviews: 310, amenities: ["Wooden Floor","Mirrors","Sound System","AC"],
-    image_url: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=800',
-    opening_time: '10:00 AM', closing_time: '08:30 PM'
-  },
-  {
-    id: '11', name: 'Jodhpur Cycling Club', type: 'cycling', specialization: 'Indoor Spin Classes, Cardio, Endurance',
-    area: 'Paota', rating: 4.8, total_reviews: 165, amenities: ["Spin Bikes","AC","Locker","Juice Bar"],
-    image_url: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=800',
-    opening_time: '06:00 AM', closing_time: '09:00 PM'
-  },
-  {
-    id: '12', name: 'Zen Meditation Center', type: 'meditation', specialization: 'Guided Meditation, Mindfulness, Healing',
-    area: 'Mandore', rating: 4.9, total_reviews: 88, amenities: ["Silent Zone","Garden","Cushions","Tea Room"],
-    image_url: 'https://images.unsplash.com/photo-1554244933-d876deb6b2ff?auto=format&fit=crop&q=80&w=800',
-    opening_time: '05:00 AM', closing_time: '07:00 PM'
-  }
+  // Gyms & Fitness Centers
+  { id: '1', name: 'Anytime Fitness', type: 'gym', specialization: 'International-standard equipment, Personalized training, Group activities', area: 'Ratanada', rating: 4.8, total_reviews: 320, amenities: ["AC", "24 Hrs", "Parking", "Locker"], image_url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800', opening_time: '12:00 AM', closing_time: '11:59 PM' },
+  { id: '2', name: 'Bazooka Fitness', type: 'gym', specialization: 'Modern equipment, Personal training', area: 'Sardarpura', rating: 4.6, total_reviews: 180, amenities: ["AC", "Personal Training", "Locker"], image_url: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '10:00 PM' },
+  { id: '3', name: 'D Fitness Gym', type: 'gym', specialization: 'Personal training', area: 'Baldev Nagar', rating: 4.9, total_reviews: 210, amenities: ["AC", "Personal Training", "Parking"], image_url: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=800', opening_time: '05:30 AM', closing_time: '09:30 PM' },
+  { id: '4', name: 'Hanuman Fitness Club', type: 'gym', specialization: 'Bodybuilding, Bench Press, Strength Training, Custom diet plans', area: 'Jhalamand Circle', rating: 4.7, total_reviews: 500, amenities: ["Strength Equipment", "Diet Counseling", "Parking"], image_url: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800', opening_time: '05:00 AM', closing_time: '10:00 PM' },
+  { id: '5', name: 'Bossfit New Level Of Fitness', type: 'gym', specialization: 'Functional training, Personalized fitness', area: 'Shankar Nagar', rating: 4.8, total_reviews: 150, amenities: ["AC", "Functional Area", "Locker"], image_url: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '09:00 PM' },
+  { id: '6', name: 'Equinox Fitness', type: 'gym', specialization: 'In-depth muscle anatomy, Personal training', area: 'Paota', rating: 4.8, total_reviews: 450, amenities: ["AC", "Parking", "Locker", "Shower"], image_url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800', opening_time: '05:30 AM', closing_time: '10:00 PM' },
+  { id: '7', name: 'Metalix Gym', type: 'gym', specialization: 'Functional fitness, Traditional training', area: 'Paota', rating: 4.7, total_reviews: 310, amenities: ["AC", "Parking", "Supplement Store"], image_url: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=800', opening_time: '05:00 AM', closing_time: '10:00 PM' },
+  { id: '8', name: 'Trident Fitness', type: 'gym', specialization: 'Strength, Cardio, Group classes', area: 'Rai Ka Bagh', rating: 4.8, total_reviews: 120, amenities: ["Cardio Section", "Group Classes", "Lockers"], image_url: 'https://images.unsplash.com/photo-1552072092-7f9b8d63efcb?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '09:00 PM' },
+
+  // Yoga Studios & Centers
+  { id: '9', name: 'Yoga Guru Karan Singh', type: 'yoga', specialization: 'Traditional yoga, Pilates, Personalized training', area: 'Jodhpur', rating: 4.9, total_reviews: 210, amenities: ["Meditation Hall", "Yoga Props", "Parking"], image_url: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '08:00 PM' },
+  { id: '10', name: 'Sai Yogasthali Sansthan', type: 'yoga', specialization: 'Therapeutic Yoga, Naturopathy, Teacher Training', area: 'Various Locations', rating: 4.8, total_reviews: 320, amenities: ["Naturopathy", "Mats Provided", "Quiet Zone"], image_url: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=800', opening_time: '05:30 AM', closing_time: '07:30 PM' },
+  { id: '11', name: "Priyanka's Yoga Studio", type: 'yoga', specialization: "Yoga & Mindfulness, Meditation, Children's yoga", area: 'Ratanada', rating: 4.7, total_reviews: 140, amenities: ["AC", "Kids Classes", "Mats Provided"], image_url: 'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '08:00 PM' },
+  { id: '12', name: "Menka's Yogvatika", type: 'yoga', specialization: 'Therapeutic yoga, Beginner classes', area: 'Paota', rating: 5.0, total_reviews: 180, amenities: ["Therapy Focus", "Parking", "Quiet Zone"], image_url: 'https://images.unsplash.com/photo-1552286450-5a6c40b165ce?auto=format&fit=crop&q=80&w=800', opening_time: '06:30 AM', closing_time: '07:30 PM' },
+  { id: '13', name: 'Satva Yoga Studio', type: 'yoga', specialization: 'Holistic yoga practice', area: 'Panchsheel Colony', rating: 4.9, total_reviews: 95, amenities: ["Holistic Approach", "Mats Provided", "AC"], image_url: 'https://images.unsplash.com/photo-1510894347713-fc3ed6fdf539?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '08:00 PM' },
+  { id: '14', name: 'Om Yoga Ashram', type: 'yoga', specialization: 'Yoga, Reiki, Meditation, Sound Healing', area: 'Old City', rating: 4.8, total_reviews: 200, amenities: ["Sound Healing", "Reiki", "Meditation Hall"], image_url: 'https://images.unsplash.com/photo-1603988363607-e1e4a66962c6?auto=format&fit=crop&q=80&w=800', opening_time: '05:00 AM', closing_time: '08:00 PM' },
+  { id: '15', name: 'Ravinder Kumar', type: 'yoga', specialization: 'Ayurvedic doctor, Certified Yoga Teacher', area: 'Chopasni Road', rating: 4.9, total_reviews: 110, amenities: ["Ayurvedic Consultation", "Parking"], image_url: 'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '08:00 PM' },
+
+  // Swimming Pools & Coaching
+  { id: '16', name: 'Medical College Swimming Pool', type: 'swimming', specialization: 'Olympic-sized pool, Training for all age groups', area: 'Shastri Nagar', rating: 4.7, total_reviews: 400, amenities: ["Olympic Pool", "Coaching", "Changing Rooms"], image_url: 'https://images.unsplash.com/photo-1576013462273-d130a112245b?auto=format&fit=crop&q=80&w=800', opening_time: '05:30 AM', closing_time: '09:00 PM' },
+  { id: '17', name: 'Jodhpur Sports Club', type: 'swimming', specialization: '60x30 ft main pool, Kids pool, Women batches', area: 'Pal Road', rating: 4.6, total_reviews: 250, amenities: ["Kids Pool", "Women Batches", "Showers"], image_url: 'https://images.unsplash.com/photo-1530549387725-0b0c67da4dd2?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '08:30 PM' },
+  { id: '18', name: 'Aqua Arena Club', type: 'swimming', specialization: 'Specialized swimming training for children', area: 'AIIMS Road', rating: 4.8, total_reviews: 130, amenities: ["Kids Training", "Lockers", "Cafeteria"], image_url: 'https://images.unsplash.com/photo-1600965962102-9d260a71890d?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '09:00 PM' },
+  { id: '19', name: 'Scorpion Sports Academy', type: 'swimming', specialization: 'Professional coaching for non-swimmers', area: 'Paota', rating: 4.7, total_reviews: 180, amenities: ["Professional Coaching", "Showers"], image_url: 'https://images.unsplash.com/photo-1519315901367-f34f828a2a16?auto=format&fit=crop&q=80&w=800', opening_time: '05:30 AM', closing_time: '08:00 PM' },
+  { id: '20', name: 'Sukhani Farms', type: 'swimming', specialization: 'Swimming lessons', area: 'Chokhan', rating: 4.4, total_reviews: 90, amenities: ["Outdoor Pool", "Parking", "Relaxation Area"], image_url: 'https://images.unsplash.com/photo-1519315901367-f34f828a2a16?auto=format&fit=crop&q=80&w=800', opening_time: '06:00 AM', closing_time: '08:00 PM' },
+
+  // Dance & Zumba Centres
+  { id: '21', name: "Sunil's Dance and Zumba Classes", type: 'zumba', specialization: 'Zumba, Dance Fitness, Hula Hoop, Kids fitness', area: 'Shastri Nagar', rating: 4.9, total_reviews: 310, amenities: ["AC", "Wooden Floor", "Sound System"], image_url: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?auto=format&fit=crop&q=80&w=800', opening_time: '07:00 AM', closing_time: '09:00 PM' },
+  { id: '22', name: 'SK Dance Fitness Studio', type: 'dance', specialization: 'Zumba and dance fitness', area: 'Shastri Nagar', rating: 4.8, total_reviews: 150, amenities: ["Mirrors", "AC", "Dance Floor"], image_url: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=800', opening_time: '06:30 AM', closing_time: '08:30 PM' },
+  { id: '23', name: 'Musical Beats Dance Studio', type: 'dance', specialization: 'Zumba and various dance forms', area: 'Pal Road', rating: 4.7, total_reviews: 210, amenities: ["AC", "Sound System", "Parking"], image_url: 'https://images.unsplash.com/photo-1547153760-18fc86324498?auto=format&fit=crop&q=80&w=800', opening_time: '08:00 AM', closing_time: '08:00 PM' },
+  { id: '24', name: 'Inspire Dance Studio', type: 'zumba', specialization: 'Group Zumba and aerobics sessions', area: 'Paota', rating: 4.6, total_reviews: 120, amenities: ["Group Sessions", "AC", "Changing Room"], image_url: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&q=80&w=800', opening_time: '07:00 AM', closing_time: '09:00 PM' },
+  { id: '25', name: 'Raja Jolly Dance Academy', type: 'dance', specialization: 'Energetic Zumba and dance workshops', area: 'Sardarpura', rating: 4.8, total_reviews: 190, amenities: ["Workshops", "Sound System", "Dance Floor"], image_url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800', opening_time: '09:00 AM', closing_time: '09:00 PM' },
+  { id: '26', name: 'Friends Dance Academy', type: 'dance', specialization: 'Dance classes', area: 'Ratanada', rating: 4.7, total_reviews: 110, amenities: ["AC", "Mirrors", "Sound System"], image_url: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=800', opening_time: '08:00 AM', closing_time: '08:00 PM' }
 ];
 
 const Home = () => {
