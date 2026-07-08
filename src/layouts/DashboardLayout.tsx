@@ -24,14 +24,14 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
-  const { profile, signOut } = useAuthStore()
+  const { user, profile, signOut } = useAuthStore()
   const location = useLocation()
   const navigate = useNavigate()
 
   const navItems = [
     { name: 'Overview', icon: LayoutDashboard, path: '/dashboard' },
-    { name: 'My Subscription', icon: CreditCard, path: '/dashboard/subscription' },
-    { name: 'Class Schedule', icon: Calendar, path: '/dashboard/schedule' },
+    { name: 'My Subscription', icon: CreditCard, path: '/pricing' },
+    { name: 'Class Schedule', icon: Calendar, path: '/dashboard' },
     { name: 'Check-In', icon: QrCode, path: '/dashboard/checkin' },
     { name: 'Payments', icon: History, path: '/dashboard/payments' },
     { name: 'Profile', icon: UserCircle, path: '/dashboard/profile' },
@@ -42,12 +42,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     navigate('/')
   }
 
+  const displayName = user?.user_metadata?.full_name || profile?.full_name || user?.email?.split('@')[0] || 'Member'
+
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
       {/* Sidebar */}
       <aside className="hidden lg:flex flex-col w-72 bg-white border-r border-slate-200">
         <div className="p-8">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/explore" className="flex items-center gap-2">
             <Dumbbell className="h-8 w-8 text-primary" />
             <span className="text-2xl font-bold text-slate-900 tracking-tight">
               Fit<span className="text-primary">Jodhpur</span>
@@ -57,7 +59,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
         <nav className="flex-grow px-4 space-y-2">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path
+            const isActive = item.name === 'Class Schedule' 
+              ? false 
+              : location.pathname === item.path
             return (
               <Link
                 key={item.name}
@@ -102,14 +106,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </button>
             <div className="flex items-center gap-4 pl-6 border-l border-slate-100">
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-bold text-slate-900 leading-none">{profile?.full_name}</p>
-                <p className="text-xs text-slate-500 mt-1 uppercase tracking-widest">{profile?.role}</p>
+                <p className="text-sm font-bold text-slate-900 leading-none">{displayName}</p>
+                <p className="text-xs text-slate-500 mt-1 uppercase tracking-widest">{profile?.role || 'Member'}</p>
               </div>
               <div className="h-10 w-10 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary font-bold overflow-hidden">
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
                 ) : (
-                  profile?.full_name?.charAt(0) || 'U'
+                  displayName.charAt(0).toUpperCase()
                 )}
               </div>
             </div>

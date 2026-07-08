@@ -37,9 +37,9 @@ const Signup = () => {
     if (error) {
       toast.error(error.message)
     } else if (data?.session) {
-      // User is auto-confirmed, go straight to dashboard
+      // User is auto-confirmed, go to external site showing all gyms
       toast.success('Account created! Welcome to FitJodhpur! 🎉')
-      navigate('/dashboard')
+      window.location.href = 'https://fitjodhpurr.netlify.app/'
     } else {
       // Email confirmation required
       toast.success('Account created! Check your email to confirm, then log in.', { duration: 6000 })

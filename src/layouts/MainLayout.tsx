@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Dumbbell, User, LogOut, Menu, X } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
+import { supabase } from '../lib/supabase'
+import { toast } from 'react-hot-toast'
 
 interface MainLayoutProps {
   children: React.ReactNode
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { user, profile, signOut } = useAuthStore()
+  const { user, profile, setUser, setProfile, setLoading, signOut } = useAuthStore()
   const [isMenuOpen, setIsMenuOpen] = React.useState(false)
   const navigate = useNavigate()
 
@@ -17,6 +19,33 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     navigate('/')
   }
 
+  // Load authenticated user and profile on mount
+  useEffect(() => {
+    const loadUser = async () => {
+      setLoading(true)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        setUser(session.user)
+        const { data: profileData, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single()
+        if (error) {
+          console.error('Failed to fetch profile:', error)
+          toast.error('Unable to load your profile.')
+        } else {
+          setProfile(profileData)
+        }
+      } else {
+        setUser(null)
+        setProfile(null)
+      }
+      setLoading(false)
+    }
+    loadUser()
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
@@ -24,7 +53,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link to="/" className="flex items-center gap-2">
+              <Link to="/explore" className="flex items-center gap-2">
                 <Dumbbell className="h-8 w-8 text-primary" />
                 <span className="text-2xl font-bold text-slate-900 tracking-tight">
                   Fit<span className="text-primary">Jodhpur</span>
@@ -34,12 +63,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <Link to="/" className="text-slate-600 hover:text-primary font-medium">Home</Link>
+              <Link to="/explore" className="text-slate-600 hover:text-primary font-medium">Home</Link>
               <Link to="/pricing" className="text-slate-600 hover:text-primary font-medium">Pricing</Link>
               {user ? (
                 <div className="flex items-center gap-4">
                   <Link 
-                    to={profile?.role === 'admin' ? '/admin' : '/dashboard'}
+                    to={profile?.role === 'admin' ? '/admin' : profile?.role === 'provider' ? '/provider/dashboard' : '/dashboard'}
                     className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-xl text-slate-700 hover:bg-slate-200 transition-all"
                   >
                     <User className="h-4 w-4" />
@@ -55,8 +84,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
               ) : (
                 <div className="flex items-center gap-4">
-                  <Link to="/login" className="text-slate-600 hover:text-primary font-medium">Login</Link>
-                  <Link to="/signup" className="btn-primary">Get Started</Link>
+                  <Link to="/get-started" className="btn-primary">Get Started</Link>
                 </div>
               )}
             </div>
@@ -76,17 +104,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden bg-white border-t border-slate-100 px-4 py-4 space-y-4">
-            <Link to="/" className="block text-slate-600 font-medium">Home</Link>
+            <Link to="/explore" className="block text-slate-600 font-medium">Home</Link>
             <Link to="/pricing" className="block text-slate-600 font-medium">Pricing</Link>
             {user ? (
               <>
-                <Link to={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="block text-slate-600 font-medium">Dashboard</Link>
+                <Link to={profile?.role === 'admin' ? '/admin' : profile?.role === 'provider' ? '/provider/dashboard' : '/dashboard'} className="block text-slate-600 font-medium">Dashboard</Link>
                 <button onClick={handleSignOut} className="block text-red-500 font-medium">Sign Out</button>
               </>
             ) : (
               <>
-                <Link to="/login" className="block text-slate-600 font-medium">Login</Link>
-                <Link to="/signup" className="block btn-primary text-center">Get Started</Link>
+                <Link to="/get-started" className="block btn-primary text-center">Get Started</Link>
               </>
             )}
           </div>
@@ -103,7 +130,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="col-span-1 md:col-span-2">
-              <Link to="/" className="flex items-center gap-2 mb-6">
+              <Link to="/explore" className="flex items-center gap-2 mb-6">
                 <Dumbbell className="h-8 w-8 text-primary" />
                 <span className="text-2xl font-bold text-white tracking-tight">
                   Fit<span className="text-primary">Jodhpur</span>
@@ -117,7 +144,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <div>
               <h4 className="text-white font-bold mb-4">Quick Links</h4>
               <ul className="space-y-2">
-                <li><Link to="/" className="hover:text-primary transition-colors">Home</Link></li>
+                <li><Link to="/explore" className="hover:text-primary transition-colors">Home</Link></li>
                 <li><Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
                 <li><Link to="/signup" className="hover:text-primary transition-colors">Join FitPass</Link></li>
               </ul>

@@ -6,6 +6,8 @@ import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { getTrainers, getEquipment, type Trainer } from '../data/centerData'
 import { toast } from 'react-hot-toast'
+import { useProviderStore } from '../store/providerStore'
+import EnquiryModal from '../components/EnquiryModal'
 
 const TYPE_COLORS: Record<string, string> = {
   gym: 'bg-blue-100 text-blue-700', yoga: 'bg-green-100 text-green-700',
@@ -145,6 +147,9 @@ const CenterDetail = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuthStore()
+  
+  const { providerProfile, pricingPlans, batches, mediaFiles, reviews } = useProviderStore()
+
   const [center, setCenter] = useState<any>(null)
   const [schedules, setSchedules] = useState<any[]>([])
   const [plans, setPlans] = useState<any[]>([])
@@ -154,11 +159,56 @@ const CenterDetail = () => {
   const [bookingDate, setBookingDate] = useState('')
   const [bookingSlot, setBookingSlot] = useState('')
   const [bookingSuccess, setBookingSuccess] = useState(false)
+  const [showEnquiry, setShowEnquiry] = useState(false)
 
   useEffect(() => {
     if (!id) return
     const fetchData = async () => {
       setLoading(true)
+
+      // Override if viewing active custom provider center
+      if (providerProfile && id === providerProfile.id) {
+        const usedCenter = {
+          id: providerProfile.id,
+          name: providerProfile.businessName,
+          type: providerProfile.category,
+          specialization: providerProfile.bio,
+          address: providerProfile.fullAddress || providerProfile.area,
+          area: providerProfile.area,
+          rating: 4.9,
+          total_reviews: reviews.length,
+          image_url: providerProfile.profilePhoto || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800',
+          opening_time: '06:00 AM',
+          closing_time: '09:00 PM',
+          amenities: providerProfile.subSpecializations || []
+        }
+        setCenter(usedCenter)
+        setSchedules(batches.map(b => ({
+          id: b.id,
+          center_id: providerProfile.id,
+          class_name: b.batchName,
+          instructor_name: providerProfile.ownerName || 'Lead Coach',
+          class_type: providerProfile.category,
+          day_of_week: b.dayOfWeek,
+          start_time: b.startTime,
+          end_time: b.endTime,
+          max_capacity: b.capacity,
+          current_bookings: b.currentOccupancy || 0
+        })))
+        setPlans(pricingPlans.map(pl => ({
+          id: pl.id,
+          name: pl.label,
+          plan_type: 'single_center',
+          center_id: providerProfile.id,
+          duration_days: pl.duration.includes('month') ? parseInt(pl.duration) * 30 : 30,
+          price_inr: pl.price,
+          is_featured: pl.isPopular,
+          features: pl.description ? [pl.description] : ['Premium Trainer access', 'Flexible slot attendance']
+        })))
+        setLoading(false)
+        return
+      }
+
       const [{ data: c }, { data: s }, { data: p }] = await Promise.all([
         supabase.from('fitness_centers').select('*').eq('id', id).single(),
         supabase.from('class_schedules').select('*').eq('center_id', id).order('start_time'),
@@ -177,7 +227,7 @@ const CenterDetail = () => {
       setLoading(false)
     }
     fetchData()
-  }, [id])
+  }, [id, providerProfile])
 
   const daySchedules = schedules.filter(s => s.day_of_week === selectedDay)
 
@@ -310,11 +360,30 @@ const CenterDetail = () => {
                       <span>{s.current_bookings}/{s.max_capacity}</span>
                     </div>
                     {user ? (
-                      <button className="btn-primary text-sm px-4 py-2" disabled={s.current_bookings >= s.max_capacity}>
+                      <button 
+                        onClick={() => {
+                          if (providerProfile && center.id === providerProfile.id) {
+                            setShowEnquiry(true)
+                          }
+                        }}
+                        className="btn-primary text-sm px-4 py-2" 
+                        disabled={s.current_bookings >= s.max_capacity}
+                      >
                         {s.current_bookings >= s.max_capacity ? 'Full' : 'Book'}
                       </button>
                     ) : (
-                      <button onClick={() => navigate('/login')} className="btn-primary text-sm px-4 py-2">Login to Book</button>
+                      <button 
+                        onClick={() => {
+                          if (providerProfile && center.id === providerProfile.id) {
+                            setShowEnquiry(true)
+                          } else {
+                            navigate('/login')
+                          }
+                        }} 
+                        className="btn-primary text-sm px-4 py-2"
+                      >
+                        Login to Book
+                      </button>
                     )}
                   </div>
                 </div>
@@ -348,8 +417,19 @@ const CenterDetail = () => {
                     {t.certifications.length > 2 && <span className="text-xs text-slate-400">+{t.certifications.length - 2} more</span>}
                   </div>
                   <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                    <span className="text-sm font-bold text-slate-900">₹{t.fee}/session</span>
-                    <button onClick={() => { setSelectedTrainer(t); setBookingSuccess(false) }} className="btn-primary text-xs px-4 py-2">Book Session</button>
+                    <button 
+                      onClick={() => {
+                        if (providerProfile && center.id === providerProfile.id) {
+                          setShowEnquiry(true)
+                        } else {
+                          setSelectedTrainer(t)
+                          setBookingSuccess(false)
+                        }
+                      }} 
+                      className="btn-primary text-xs px-4 py-2"
+                    >
+                      Book Session
+                    </button>
                   </div>
                 </div>
               ))}
@@ -437,7 +517,13 @@ const CenterDetail = () => {
                 ))}
               </ul>
               <button
-                onClick={() => navigate(`/checkout?plan=${p.id}`)}
+                onClick={() => {
+                  if (providerProfile && center.id === providerProfile.id) {
+                    setShowEnquiry(true)
+                  } else {
+                    navigate(`/checkout?plan=${p.id}`)
+                  }
+                }}
                 className={`w-full py-2.5 rounded-xl font-bold text-sm transition-all ${p.is_featured ? 'btn-primary' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}
               >
                 Subscribe Now
@@ -521,6 +607,14 @@ const CenterDetail = () => {
             )}
           </div>
         </div>
+      )}
+      {/* Enquiry Modal */}
+      {showEnquiry && providerProfile && (
+        <EnquiryModal 
+          providerId={providerProfile.id}
+          businessName={providerProfile.businessName}
+          onClose={() => setShowEnquiry(false)}
+        />
       )}
     </MainLayout>
   )

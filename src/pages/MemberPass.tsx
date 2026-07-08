@@ -5,9 +5,9 @@ import { useAuthStore } from '../store/authStore'
 
 const MemberPass = () => {
   const [searchParams] = useSearchParams()
-  const { profile } = useAuthStore()
+  const { user, profile } = useAuthStore()
   const planName = searchParams.get('planName') || 'All-Access Pass'
-  const userName = searchParams.get('name') || profile?.full_name || 'Member Name'
+  const userName = searchParams.get('name') || user?.user_metadata?.full_name || profile?.full_name || user?.email?.split('@')[0] || 'Member Name'
   
   // Calculate expiration date (30 days from today by default if not specified)
   const expiryDate = new Date()

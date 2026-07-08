@@ -3,6 +3,7 @@ import { Search, Filter, MapPin, Star, Award, X, SlidersHorizontal } from 'lucid
 import { Link } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import { supabase } from '../lib/supabase'
+import { useProviderStore } from '../store/providerStore'
 
 const CATEGORIES = ['All', 'gym', 'yoga', 'crossfit', 'mma', 'zumba', 'pilates', 'swimming', 'dance', 'cycling', 'meditation']
 const CATEGORY_LABELS: Record<string, string> = {
@@ -96,6 +97,8 @@ const Home = () => {
   const [minRating, setMinRating] = useState(0)
   const [showFilters, setShowFilters] = useState(false)
 
+  const { providerProfile } = useProviderStore()
+
   useEffect(() => {
     const fetchCenters = async () => {
       setLoading(true)
@@ -120,9 +123,33 @@ const Home = () => {
     fetchCenters()
   }, [])
 
+  // Dynamic injection of Zustand Provider Listing
+  const allCenters = useMemo(() => {
+    const list = [...centers]
+    if (providerProfile && providerProfile.businessName && providerProfile.listingStatus !== 'paused') {
+      const pCenter: Center = {
+        id: providerProfile.id,
+        name: providerProfile.businessName,
+        type: providerProfile.category,
+        specialization: providerProfile.bio,
+        area: providerProfile.area,
+        rating: 4.9,
+        total_reviews: 6,
+        image_url: providerProfile.profilePhoto || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800',
+        amenities: providerProfile.subSpecializations || [],
+        opening_time: '06:00 AM',
+        closing_time: '09:00 PM'
+      }
+      if (!list.some(c => c.id === pCenter.id)) {
+        list.unshift(pCenter)
+      }
+    }
+    return list
+  }, [centers, providerProfile])
+
   // Live filtering in JS
   const filtered = useMemo(() => {
-    return centers.filter(c => {
+    return allCenters.filter(c => {
       const q = searchQuery.toLowerCase()
       const matchSearch = !q ||
         c.name.toLowerCase().includes(q) ||
@@ -134,7 +161,7 @@ const Home = () => {
       const matchRating = c.rating >= minRating
       return matchSearch && matchType && matchArea && matchRating
     })
-  }, [centers, searchQuery, selectedCategory, selectedArea, minRating])
+  }, [allCenters, searchQuery, selectedCategory, selectedArea, minRating])
 
   const hasActiveFilters = searchQuery || selectedCategory !== 'All' || selectedArea !== 'All' || minRating > 0
 

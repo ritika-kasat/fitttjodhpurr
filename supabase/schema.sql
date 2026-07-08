@@ -30,7 +30,7 @@ CREATE TABLE public.profiles (
     phone          TEXT,
     date_of_birth  DATE,
     avatar_url     TEXT,
-    role           TEXT DEFAULT 'member' CHECK (role IN ('member', 'admin')),
+    role           TEXT DEFAULT 'member' CHECK (role IN ('member', 'admin', 'provider')),
     created_at     TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -193,12 +193,15 @@ RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.profiles (id, full_name, avatar_url, role)
   VALUES (
-    new.id,
-    COALESCE(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
-    new.raw_user_meta_data->>'avatar_url',
-    COALESCE(new.raw_user_meta_data->>'role', 'member')
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1)),
+    NEW.raw_user_meta_data->>'avatar_url',
+    COALESCE(NEW.raw_user_meta_data->>'role', 'member')
   )
-  ON CONFLICT (id) DO NOTHING;
+  ON CONFLICT (id) DO UPDATE SET
+    full_name = EXCLUDED.full_name,
+    avatar_url = EXCLUDED.avatar_url,
+    role = COALESCE(EXCLUDED.role, public.profiles.role);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

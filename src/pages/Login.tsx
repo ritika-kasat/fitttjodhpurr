@@ -1,30 +1,77 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Dumbbell, Mail, Lock, ArrowRight } from 'lucide-react'
-import { useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { useState, useEffect } from 'react'
+import { supabase, getUserRole } from '../lib/supabase'
 import { toast } from 'react-hot-toast'
+import { useAuthStore } from '../store/authStore'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { user, profile, loading: authLoading, setProfile } = useAuthStore()
+
+  useEffect(() => {
+    if (user && !authLoading && profile) {
+      if (profile.role === 'provider') {
+        supabase.auth.signOut().then(() => {
+          window.location.reload()
+        })
+      } else if (profile.role === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/dashboard')
+      }
+    }
+  }, [user, profile, authLoading, navigate])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: authData, error } = await supabase.auth.signInWithPassword({
       email,
       password
     })
 
     if (error) {
       toast.error(error.message)
-    } else {
-      toast.success('Welcome back!')
-      navigate('/dashboard')
+      setLoading(false)
+      return
     }
+
+    const role = await getUserRole()
+    if (!role) {
+      toast.error('Failed to retrieve user role.')
+      await supabase.auth.signOut()
+      setLoading(false)
+      return
+    }
+
+    if (role === 'provider') {
+      toast.error('This account is registered as a fitness provider, not a user.', { duration: 5000 })
+      await supabase.auth.signOut()
+      setLoading(false)
+      return
+    }
+
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authData.user?.id)
+      .single()
+
+    if (profileError || !profileData) {
+      toast.error('Failed to retrieve user profile.')
+      await supabase.auth.signOut()
+      setLoading(false)
+      return
+    }
+
+    setProfile(profileData)
+    toast.success('Welcome back!')
+    navigate('/dashboard')
     setLoading(false)
   }
 
